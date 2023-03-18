@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import socketserver
+import threading
 import discord
 import json
 import os
@@ -9,6 +11,14 @@ client = discord.Client(intents=intents)
 f = open('weeklyBase.json')
 
 meetingDict = json.load(f)
+
+def create_server():
+    s = socketserver.TCPServer(("0.0.0.0", 8656), socketserver.BaseRequestHandler)
+    s.serve_forever()
+
+
+th = threading.Thread(target=create_server)
+th.start()
 
 
 @client.event
