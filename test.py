@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
-import socketserver
-import threading
-import discord
 import json
 import os
+import socketserver
+import threading
+from datetime import timedelta
+
+import discord
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
@@ -11,6 +12,7 @@ client = discord.Client(intents=intents)
 f = open('weeklyBase.json')
 
 meetingDict = json.load(f)
+
 
 def create_server():
     s = socketserver.TCPServer(("0.0.0.0", 8656), socketserver.BaseRequestHandler)
@@ -73,10 +75,9 @@ def find_next_meeting(timestamp, language):
             print(meetingday.timestamp())
             if (meetingday - curr).total_seconds() > 0:
                 if meetings.get(meeting).get("title") == language:
-                    print(meetingday.timestamp())
-                    print(str(round(meetingday.timestamp())))
-                    return "The next " + language + " meeting is at " + "<t:" + str(round(meetingday.timestamp())) + \
-                           ":F> which is in <t:" + str(round(meetingday.timestamp())) + ":R>"
+                    time = str(round(meetingday.timestamp()))
+                    return "The next expected {1} meeting is on <t:{0}:D> at <t:{0}:t> which is in <t:{0}:R>".format(
+                        time, language)
 
         currweekday = increment_day(currweekday)
 
