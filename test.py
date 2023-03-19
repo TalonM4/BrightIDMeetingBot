@@ -50,7 +50,7 @@ async def on_message(message):
             elif split_message[1].lower() in far_args:
                 await message.channel.send(find_next_meeting(message.created_at, "Farsi"))
             elif split_message[1].lower() in ind_args:
-                await message.channel.send(find_next_meeting(message.created_at, "Indonesia"))
+                await message.channel.send(find_next_meeting(message.created_at, "Bahasa Indonesia"))
             else:
                 await message.channel.send(find_next_meeting(message.created_at, "English"))
 
@@ -76,8 +76,8 @@ def find_next_meeting(timestamp, language):
             if (meetingday - curr).total_seconds() > 0:
                 if meetings.get(meeting).get("title") == language:
                     time = str(round(meetingday.timestamp()))
-                    return "The next expected {1} meeting is on <t:{0}:D> at <t:{0}:t> which is <t:{0}:R>".format(
-                        time, language)
+                    return "The next expected {1} meeting is on <t:{0}:D> at <t:{0}:t> which is <t:{0}:R>. You can find"\
+                           " the full meets schedule at: https://meet.brightid.org/#/".format(time, language)
 
         currweekday = increment_day(currweekday)
 
