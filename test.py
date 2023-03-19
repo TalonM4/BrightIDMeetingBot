@@ -76,7 +76,7 @@ def find_next_meeting(timestamp, language):
             if (meetingday - curr).total_seconds() > 0:
                 if meetings.get(meeting).get("title") == language:
                     time = str(round(meetingday.timestamp()))
-                    return "The next expected {1} meeting is on <t:{0}:D> at <t:{0}:t> which is in <t:{0}:R>".format(
+                    return "The next expected {1} meeting is on <t:{0}:D> at <t:{0}:t> which is <t:{0}:R>".format(
                         time, language)
 
         currweekday = increment_day(currweekday)
