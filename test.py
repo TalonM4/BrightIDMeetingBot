@@ -72,7 +72,6 @@ def find_next_meeting(timestamp, language):
         for meeting in meetings:
             meetingday = curr + timedelta(days=1 * i)
             meetingday = meetingday.replace(hour=int(meeting[:2]), minute=int(meeting[3:5]))
-            print(meetingday.timestamp())
             if (meetingday - curr).total_seconds() > 0:
                 if meetings.get(meeting).get("title") == language:
                     time = str(round(meetingday.timestamp()))
