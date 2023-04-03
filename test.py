@@ -5,9 +5,11 @@ import threading
 from datetime import timedelta
 
 import discord
+from discord import app_commands
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 
 f = open('weeklyBase.json')
 
@@ -21,6 +23,11 @@ def create_server():
 
 th = threading.Thread(target=create_server)
 th.start()
+
+
+@tree.command(name="next-meet", description="Finds the next meet")
+async def first_command(interaction, language):
+    await interaction.response.send_message(find_next_meeting(interaction.created_at, language))
 
 
 @client.event
@@ -63,6 +70,16 @@ def increment_day(num):
 
 
 def find_next_meeting(timestamp, language):
+    time = find_next_timestamp(timestamp, language)
+
+    if time:
+        return "The next expected {1} meeting is on <t:{0}:D> at <t:{0}:t> which is <t:{0}:R>. You can find the full " \
+               "meets schedule at: https://meet.brightid.org/#/".format(time, language)
+    else:
+        "Couldn't find a meeting"
+
+
+def find_next_timestamp(timestamp, language):
     curr = timestamp
     currweekday = curr.weekday()
 
@@ -74,13 +91,15 @@ def find_next_meeting(timestamp, language):
             meetingday = meetingday.replace(hour=int(meeting[:2]), minute=int(meeting[3:5]))
             if (meetingday - curr).total_seconds() > 0:
                 if meetings.get(meeting).get("title") == language:
-                    time = str(round(meetingday.timestamp()))
-                    return "The next expected {1} meeting is on <t:{0}:D> at <t:{0}:t> which is <t:{0}:R>. You can find"\
-                           " the full meets schedule at: https://meet.brightid.org/#/".format(time, language)
+                    return str(round(meetingday.timestamp()))
 
         currweekday = increment_day(currweekday)
 
-    return "Failed to find meeting"
+
+@client.event
+async def on_ready():
+    await tree.sync()
+    print("Ready!")
 
 
 client.run(os.environ["TOKEN"])
