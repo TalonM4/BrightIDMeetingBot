@@ -26,7 +26,7 @@ th.start()
 
 
 @tree.command(name="next-meet", description="Finds the next meet")
-async def first_command(interaction, language):
+async def first_command(interaction, language: str):
     await interaction.response.send_message(find_next_meeting(interaction.created_at, language))
 
 
