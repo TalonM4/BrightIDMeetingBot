@@ -76,7 +76,7 @@ def find_next_meeting(timestamp, language):
         return "The next expected {1} meeting is on <t:{0}:D> at <t:{0}:t> which is <t:{0}:R>. You can find the full " \
                "meets schedule at: https://meet.brightid.org/#/".format(time, language)
     else:
-        "Couldn't find a meeting"
+        return "Couldn't find a meeting"
 
 
 def find_next_timestamp(timestamp, language):
