@@ -27,8 +27,18 @@ th.start()
 
 @tree.command(name="next-meet", description="Finds the next meet")
 async def first_command(interaction, language: str):
-    await interaction.response.send_message(find_next_meeting(interaction.created_at, language))
+    print(interaction.created_at)
+    await interaction.response.send_message(find_next_meeting(interaction.created_at, language_parser(language)))
 
+
+def language_parser(language):
+    lang_dict = {"English": ["english", "en"], "Spanish": ["spanish", "es"], "Chinese": ["chinese", "zh"],
+                 "Russian": ["russian", "ru"], "Hindi": ["hindi", "hi"], "Bengali": ["bengali", "bn"],
+                 "Farsi": ["farsi", "fa"], "Bahasa Indonesia": ["indonesian", "id"]}
+
+    for lang in lang_dict:
+        if language in lang_dict.get(lang):
+            return lang
 
 @client.event
 async def on_message(message):
@@ -37,29 +47,7 @@ async def on_message(message):
         if len(split_message) == 1:
             await message.channel.send(find_next_meeting(message.created_at, "English"))
         else:
-            esp_args = ["spanish", "es"]
-            chn_args = ["chinese", "zh"]
-            rus_args = ["russian", "ru"]
-            hin_args = ["hindi", "hi"]
-            ben_args = ["bengali", "bn"]
-            far_args = ["farsi", "fa"]
-            ind_args = ["indonesian", "id"]
-            if split_message[1].lower() in esp_args:
-                await message.channel.send(find_next_meeting(message.created_at, "Spanish"))
-            elif split_message[1].lower() in chn_args:
-                await message.channel.send(find_next_meeting(message.created_at, "Chinese"))
-            elif split_message[1].lower() in rus_args:
-                await message.channel.send(find_next_meeting(message.created_at, "Russian"))
-            elif split_message[1].lower() in hin_args:
-                await message.channel.send(find_next_meeting(message.created_at, "Hindi"))
-            elif split_message[1].lower() in ben_args:
-                await message.channel.send(find_next_meeting(message.created_at, "Bengali"))
-            elif split_message[1].lower() in far_args:
-                await message.channel.send(find_next_meeting(message.created_at, "Farsi"))
-            elif split_message[1].lower() in ind_args:
-                await message.channel.send(find_next_meeting(message.created_at, "Bahasa Indonesia"))
-            else:
-                await message.channel.send(find_next_meeting(message.created_at, "English"))
+            await message.channel.send(find_next_meeting(message.created_at, language_parser(split_message[1])))
 
 
 def increment_day(num):
@@ -76,7 +64,7 @@ def find_next_meeting(timestamp, language):
         return "The next expected {1} meeting is on <t:{0}:D> at <t:{0}:t> which is <t:{0}:R>. You can find the full " \
                "meets schedule at: https://meet.brightid.org/#/".format(time, language)
     else:
-        return "Couldn't find a meeting"
+        return "Couldn't find a meeting for given language"
 
 
 def find_next_timestamp(timestamp, language):
